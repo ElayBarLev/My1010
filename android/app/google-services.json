@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "264213526650",
+    "project_id": "my1010-e4142",
+    "storage_bucket": "my1010-e4142.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264213526650:android:cada09b24bd5bb399da3c3",
+        "android_client_info": {
+          "package_name": "com.elaybarlev.ten_ten_clone"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA20n125IaF88RMRrij2EjVyG8pK4M_I2A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
