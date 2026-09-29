@@ -1,0 +1,40 @@
+rules_version = '2';
+
+// Global leaderboard: leaderboards/{modeId}/scores/{uid}
+// - Anyone may read.
+// - A signed-in (anonymous is fine) player may only write their own doc.
+// - Scores can only go up; renames keep the score unchanged.
+// - Shape of the document is strictly validated.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /leaderboards/{modeId}/scores/{uid} {
+      allow read: if true;
+
+      allow create: if isOwner(uid) && isValidEntry(modeId, uid);
+
+      allow update: if isOwner(uid)
+        && isValidEntry(modeId, uid)
+        && request.resource.data.score >= resource.data.score;
+
+      allow delete: if false;
+    }
+
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    function isValidEntry(modeId, uid) {
+      let data = request.resource.data;
+      return data.keys().hasOnly(['uid', 'displayName', 'score', 'modeId', 'updatedAt'])
+        && data.uid == uid
+        && data.modeId == modeId
+        && data.displayName is string
+        && data.displayName.size() > 0
+        && data.displayName.size() <= 20
+        && data.score is int
+        && data.score > 0
+        && data.score < 10000000
+        && data.updatedAt == request.time;
+    }
+  }
+}
