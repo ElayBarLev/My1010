@@ -72,6 +72,8 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_type == 'tag' && github.ref_name || format('v{0}-build{1}', steps.version.outputs.name, steps.version.outputs.code) }}
+          # Tag the commit that was built (manual runs may be on a branch).
+          target_commitish: ${{ github.sha }}
           name: ${{ steps.version.outputs.name }} (build ${{ steps.version.outputs.code }})
           files: my1010-*.apk
           generate_release_notes: true
