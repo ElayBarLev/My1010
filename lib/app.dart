@@ -6,6 +6,7 @@ import 'features/board/domain/entities/game_state.dart';
 import 'features/board/presentation/controllers/game_controller.dart';
 import 'features/board/presentation/pages/game_page.dart';
 import 'features/leaderboard/presentation/leaderboard_page.dart';
+import 'features/leaderboard/presentation/leaderboard_name_entry.dart';
 import 'features/leaderboard/presentation/leaderboard_providers.dart';
 import 'features/themes/presentation/theme_controller.dart';
 
@@ -31,7 +32,8 @@ class TenTenApp extends ConsumerWidget {
       theme: palette.toThemeData(),
       initialRoute: AppRoutes.game,
       routes: {
-        AppRoutes.game: (_) => const GamePage(),
+        AppRoutes.game: (_) =>
+            const GamePage(gameOverExtra: LeaderboardNameEntry()),
         AppRoutes.leaderboard: (_) => const LeaderboardPage(),
       },
     );

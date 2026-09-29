@@ -1,0 +1,24 @@
+# ten_ten_clone (1010! clone)
+
+Flutter + Riverpod 3 + SharedPreferences + Firebase (Firestore, anonymous Auth).
+
+## Commands
+- `flutter pub get`
+- `dart format lib test` (CI fails on unformatted code)
+- `flutter analyze` (must report no issues)
+- `flutter test`
+
+## Architecture
+Feature-first clean architecture under `lib/features/{board,themes,leaderboard}`,
+each with `domain` / `data` / `presentation`.
+- `board/domain` is pure Dart (no Flutter imports; `package:meta` only). Keep it that way.
+- New game modes: subclass `GameMode` in `board/domain/game_mode.dart`, register in `GameModes.all`.
+- Features don't import each other's widgets; cross-feature wiring happens in `lib/app.dart`
+  (score submission on game over, game-over overlay extras) and via named routes (`core/routing`).
+- `sharedPreferencesProvider` is overridden in `main()` and tests; `leaderboardRepositoryProvider`
+  defaults to the in-memory repo and is overridden with Firestore when Firebase initializes.
+- `lib/firebase_options.dart` is a placeholder until `flutterfire configure` is run.
+
+## Tests
+- `test/helpers/pump_app.dart`: `pumpGame` (scripted tray via `SequenceShapeGenerator`) and
+  `dragShapeTo` (real drag gestures that account for the 64px finger lift).

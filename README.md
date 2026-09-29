@@ -78,29 +78,74 @@ leaderboard buckets (`leaderboards/<id>/scores`) are all keyed by the mode, so
 nothing else needs to change. For custom rules, override `isGameOver`,
 `createShapeGenerator` or `catalog`.
 
-## Running
+## Getting started
 
 ```bash
+git clone https://github.com/ElayBarLev/My1010.git && cd My1010
 flutter pub get
-flutter run            # Android / iOS / web
+flutter run            # Android / iOS / web (Chrome)
 flutter test           # unit + widget tests
 flutter analyze
 ```
 
-## Firebase setup (optional)
+Requires Flutter 3.47.5 (stable, Dart 3.13) or newer.
 
-The app works without Firebase. To enable the global leaderboard:
+- **CI** (`.github/workflows/ci.yml`) runs the format check, analyze and tests
+  on every push and PR.
+- **Web deploy** (`.github/workflows/deploy-web.yml`) publishes the game to
+  GitHub Pages on every push to `main`. It's a one-time switch: repo
+  **Settings → Pages → Source: GitHub Actions**. The game will then be at
+  `https://elaybarlev.github.io/My1010/`.
+- **Claude Code on the web**: `.claude/hooks/session-start.sh` installs Flutter
+  automatically in cloud sessions.
 
-```bash
-dart pub global activate flutterfire_cli
-firebase login
-flutterfire configure              # overwrites lib/firebase_options.dart
-firebase deploy --only firestore   # deploys firestore.rules + indexes
-```
+## Online leaderboard (Firebase)
 
-Then enable **Anonymous** sign-in in the Firebase console (Authentication →
-Sign-in method).
+**Where things run:** GitHub stores the code and can host the *web build*
+(GitHub Pages), but it can't run a database. The leaderboard data lives in
+**Firebase (Cloud Firestore)**, which is Google's hosted service: it's always
+online, with no server for you to keep running. The free **Spark** plan
+(50k reads and 20k writes per day) is plenty for this game.
 
-`firestore.rules` only allows a signed-in player to write their own
-`leaderboards/{modeId}/scores/{uid}` document. The document shape is
-validated, and the score can only go up.
+**No login for players:** the app signs each device in with Firebase
+*Anonymous Auth*, which is invisible to the player. They only type a name,
+on the game-over screen or on the leaderboard page. The anonymous id is
+what lets `firestore.rules` guarantee a player can only write their own
+entry, and that scores only go up.
+
+Until Firebase is configured, the app runs with an offline, on-device
+leaderboard and shows an "Offline mode" notice.
+
+### One-time setup (about 10 minutes)
+
+1. Create a project at <https://console.firebase.google.com> (Analytics not
+   needed).
+2. In the console:
+   - **Build → Firestore Database → Create database** (production mode, pick
+     a region close to your players).
+   - **Build → Authentication → Get started → Sign-in method → Anonymous →
+     Enable.**
+3. On your machine:
+   ```bash
+   npm install -g firebase-tools
+   dart pub global activate flutterfire_cli
+   firebase login
+   flutterfire configure --project=<your-project-id> --platforms=android,ios,web
+   firebase use <your-project-id>
+   firebase deploy --only firestore        # security rules + indexes
+   ```
+4. Commit the generated files, which are not secrets: Firebase client keys
+   are public identifiers, and access is enforced by `firestore.rules`.
+   ```bash
+   git add lib/firebase_options.dart android/app/google-services.json \
+           ios/Runner/GoogleService-Info.plist firebase.json
+   git commit -m "chore: configure Firebase"
+   git push
+   ```
+   Every build, including the GitHub Pages site, now uses the online
+   leaderboard.
+
+**Data model:** `leaderboards/{modeId}/scores/{uid}` holds
+`{uid, displayName, score, modeId, updatedAt}`, one document per player per
+mode storing their best score. The rules validate the shape, cap names at 20
+characters, and only allow the score to go up.

@@ -13,7 +13,10 @@ import '../widgets/score_header.dart';
 import '../widgets/shape_tray.dart';
 
 class GamePage extends ConsumerWidget {
-  const GamePage({super.key});
+  const GamePage({super.key, this.gameOverExtra});
+
+  /// Extra content for the game-over overlay (see [GameOverOverlay.extra]).
+  final Widget? gameOverExtra;
 
   /// Largest board side on tablets / desktop windows.
   static const double maxBoardSide = 520;
@@ -96,7 +99,7 @@ class GamePage extends ConsumerWidget {
                       opacity: isGameOver ? 1 : 0,
                       duration: const Duration(milliseconds: 350),
                       child: isGameOver
-                          ? const GameOverOverlay()
+                          ? GameOverOverlay(extra: gameOverExtra)
                           : const SizedBox.shrink(),
                     ),
                   ),

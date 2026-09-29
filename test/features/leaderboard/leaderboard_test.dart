@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ten_ten_clone/features/leaderboard/data/in_memory_leaderboard_repository.dart';
+import 'package:ten_ten_clone/features/board/domain/entities/grid_point.dart';
+import 'package:ten_ten_clone/features/board/presentation/controllers/game_controller.dart';
 import 'package:ten_ten_clone/features/leaderboard/domain/leaderboard_entry.dart';
+import 'package:ten_ten_clone/features/leaderboard/presentation/leaderboard_name_entry.dart';
 
 import '../../helpers/pump_app.dart';
 import '../../helpers/test_shapes.dart';
@@ -91,5 +94,37 @@ void main() {
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
     expect(find.text('Elay'), findsOneWidget);
+  });
+
+  testWidgets('players name themselves on game over without logging in', (
+    tester,
+  ) async {
+    final repo = InMemoryLeaderboardRepository();
+    final container = await pumpGame(
+      tester,
+      shapes: [square3, square3, square3],
+      leaderboard: repo,
+    );
+    final controller = container.read(gameControllerProvider.notifier);
+    for (final r in const [0, 3, 6]) {
+      for (final c in const [0, 3, 6]) {
+        controller.place((r + c ~/ 3) % 3, GridPoint(r, c));
+      }
+    }
+    await tester.pumpAndSettle();
+    expect(container.read(gameControllerProvider).isGameOver, isTrue);
+
+    // Score was auto-submitted under the default name.
+    var top = await repo.watchTopScores(modeId: 'classic').first;
+    expect(top.single.displayName, 'Player');
+
+    await tester.enterText(find.byKey(LeaderboardNameEntry.fieldKey), ' Elay ');
+    await tester.tap(find.byKey(LeaderboardNameEntry.saveKey));
+    await tester.pumpAndSettle();
+
+    top = await repo.watchTopScores(modeId: 'classic').first;
+    expect(top.single.displayName, 'Elay');
+    expect(top.single.score, 81);
+    expect(find.byIcon(Icons.check_rounded), findsOneWidget);
   });
 }
