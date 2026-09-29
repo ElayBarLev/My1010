@@ -9,10 +9,10 @@ import '../ffi/qqwing_puzzle_source_stub.dart'
     as platform;
 
 /// The platform's generator: QQWing over dart:ffi, or an unavailable stub
-/// on web.
-SudokuPuzzleSource createPuzzleSource() => platform.createPuzzleSource();
+/// on web. Created (and the native library probed) on first use.
+final SudokuPuzzleSource defaultPuzzleSource = platform.createPuzzleSource();
 
 /// Override in tests with a scripted source.
 final sudokuPuzzleSourceProvider = Provider<SudokuPuzzleSource>(
-  (ref) => createPuzzleSource(),
+  (ref) => defaultPuzzleSource,
 );
