@@ -6,16 +6,16 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   final imports = <String, List<String>>{};
   final libDir = Directory('lib');
-  final directive = RegExp(
-    r'''^(?:import|export)\s+'([^']+)'.*$''',
-    multiLine: true,
-  );
+  // Whole directives, including conditional imports spanning lines.
+  final directive = RegExp(r'^(?:import|export)\s[^;]*;', multiLine: true);
+  final uri = RegExp(r"'([^']+)'");
   for (final file in libDir.listSync(recursive: true).whereType<File>()) {
     if (!file.path.endsWith('.dart')) continue;
     final from = file.path.replaceAll(r'\', '/');
     imports[from] = [
       for (final match in directive.allMatches(file.readAsStringSync()))
-        _resolve(from, match.group(1)!),
+        for (final target in uri.allMatches(match.group(0)!))
+          _resolve(from, target.group(1)!),
     ];
   }
 
@@ -57,6 +57,35 @@ void main() {
         final a = gameOf(from), b = gameOf(to);
         return a != null && b != null && a != b;
       }),
+      isEmpty,
+    );
+  });
+
+  test('the QQWing FFI module is private to the Sudoku data layer', () {
+    const ffi = 'lib/games/sudoku/ffi/';
+    expect(
+      violations(
+        (from, to) =>
+            to.startsWith(ffi) &&
+            !from.startsWith(ffi) &&
+            from != 'lib/games/sudoku/data/puzzle_source.dart',
+      ),
+      isEmpty,
+    );
+    // The conditional import itself must be seen by this check.
+    expect(
+      imports['lib/games/sudoku/data/puzzle_source.dart'],
+      contains('${ffi}qqwing_puzzle_source.dart'),
+    );
+  });
+
+  test('only FFI code touches dart:ffi', () {
+    expect(
+      violations(
+        (from, to) =>
+            (to == 'dart:ffi' || to == 'package:ffi/ffi.dart') &&
+            !from.startsWith('lib/games/sudoku/ffi/'),
+      ),
       isEmpty,
     );
   });

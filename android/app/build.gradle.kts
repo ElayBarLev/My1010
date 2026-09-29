@@ -56,6 +56,14 @@ android {
         }
     }
 
+    // QQWing Sudoku generator (src/qqwing), loaded via dart:ffi as
+    // libqqwing_ffi.so. Built for every ABI Flutter targets.
+    externalNativeBuild {
+        cmake {
+            path = file("../../src/qqwing/CMakeLists.txt")
+        }
+    }
+
     buildTypes {
         release {
             signingConfig = signingConfigs.findByName("release")

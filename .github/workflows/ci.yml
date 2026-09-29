@@ -17,4 +17,15 @@ jobs:
       - run: flutter pub get
       - run: dart format --output=none --set-exit-if-changed lib test
       - run: flutter analyze
+      # Builds libqqwing_ffi with CMake (build/native) and runs the dart:ffi
+      # tests against it, along with everything else.
       - run: flutter test
+
+  native:
+    # The QQWing C wrapper under AddressSanitizer / UBSan / LeakSanitizer.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S src/qqwing -B build/native-test -DCMAKE_BUILD_TYPE=Debug -DQQWING_BUILD_TESTS=ON -DQQWING_SANITIZE=ON
+      - run: cmake --build build/native-test
+      - run: ctest --test-dir build/native-test --output-on-failure
