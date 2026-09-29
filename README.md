@@ -99,6 +99,39 @@ Requires Flutter 3.47.5 (stable, Dart 3.13) or newer.
 - **Claude Code on the web**: `.claude/hooks/session-start.sh` installs Flutter
   automatically in cloud sessions.
 
+## Android
+
+**Quick test (USB):** enable Developer options → USB debugging on the phone,
+plug it in, then run `flutter devices` and `flutter run --release`.
+
+**Auto-updating installs (Obtainium):** `.github/workflows/release-android.yml`
+builds a signed APK and publishes it as a GitHub Release whenever you push a
+`v*` tag, e.g. `git tag v1.0.1 && git push origin v1.0.1`. You can also run it
+manually from the Actions tab. On the phone, install
+[Obtainium](https://github.com/ImranR98/Obtainium) and add
+`https://github.com/ElayBarLev/My1010`; it installs and updates from those
+releases.
+
+The official F-Droid repository doesn't accept apps that use Firebase
+(proprietary Google libraries), so Obtainium is the simplest way to get
+F-Droid-style updates.
+
+One-time signing setup. Every update must be signed with the same key, so
+keep a backup of the `.jks` file:
+
+```powershell
+keytool -genkey -v -keystore upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("upload-keystore.jks")) | Set-Clipboard
+```
+
+Then add these repo secrets under Settings → Secrets and variables → Actions:
+`ANDROID_KEYSTORE_BASE64` (paste the clipboard), `ANDROID_KEYSTORE_PASSWORD`,
+`ANDROID_KEY_ALIAS` (`upload`) and `ANDROID_KEY_PASSWORD`.
+
+For signed release builds on your own machine, create
+`android/key.properties` (git-ignored) containing `storeFile`,
+`storePassword`, `keyAlias` and `keyPassword`.
+
 ## Online leaderboard (Firebase)
 
 **Where things run:** GitHub stores the code and can host the *web build*
@@ -120,12 +153,17 @@ leaderboard and shows an "Offline mode" notice.
 
 1. Create a project at <https://console.firebase.google.com> (Analytics not
    needed).
-2. In the console:
-   - **Build → Firestore Database → Create database** (production mode, pick
-     a region close to your players).
-   - **Build → Authentication → Get started → Sign-in method → Anonymous →
-     Enable.**
-3. On your machine:
+2. In the console (the left menu no longer has a "Build" section; use the
+   search box or these URLs):
+   - `https://console.firebase.google.com/project/<project-id>/firestore`:
+     **Create database** (Standard edition, production mode, pick a region
+     close to your players).
+   - `https://console.firebase.google.com/project/<project-id>/authentication/providers`:
+     **Anonymous → Enable → Save**.
+   - `https://console.firebase.google.com/project/<project-id>/authentication/settings`:
+     **Authorized domains → Add domain** `elaybarlev.github.io` (needed for
+     the GitHub Pages build).
+3. On your machine (Flutter 3.47+ required; run `flutter upgrade` first):
    ```bash
    npm install -g firebase-tools
    dart pub global activate flutterfire_cli
@@ -134,6 +172,9 @@ leaderboard and shows an "Offline mode" notice.
    firebase use <your-project-id>
    firebase deploy --only firestore        # security rules + indexes
    ```
+   On Windows, if `flutterfire` isn't recognized, add
+   `%LOCALAPPDATA%\Pub\Cache\bin` to PATH, or run it as
+   `dart pub global run flutterfire_cli:flutterfire configure ...`.
 4. Commit the generated files, which are not secrets: Firebase client keys
    are public identifiers, and access is enforced by `firestore.rules`.
    ```bash
