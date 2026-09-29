@@ -6,9 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
 import 'core/firebase/firebase_bootstrap.dart';
+import 'core/firebase/firestore_leaderboard_repository.dart';
+import 'core/firebase/leaderboard_repository_provider.dart';
 import 'core/storage/shared_preferences_provider.dart';
-import 'features/leaderboard/data/firestore_leaderboard_repository.dart';
-import 'features/leaderboard/presentation/leaderboard_providers.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

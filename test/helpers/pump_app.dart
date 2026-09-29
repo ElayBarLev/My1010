@@ -3,21 +3,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my1010/app.dart';
-import 'package:my1010/core/constants/game_constants.dart';
+import 'package:my1010/games/original_game/domain/game_constants.dart';
 import 'package:my1010/core/storage/shared_preferences_provider.dart';
-import 'package:my1010/features/board/domain/entities/grid_point.dart';
-import 'package:my1010/features/board/domain/entities/shape.dart';
-import 'package:my1010/features/board/domain/game_engine.dart';
-import 'package:my1010/features/board/domain/game_mode.dart';
-import 'package:my1010/features/board/domain/services/shape_generator.dart';
-import 'package:my1010/features/board/presentation/controllers/game_controller.dart';
-import 'package:my1010/features/board/presentation/layout/board_metrics.dart';
-import 'package:my1010/features/board/presentation/widgets/board_grid.dart';
-import 'package:my1010/features/board/presentation/widgets/shape_tray.dart';
-import 'package:my1010/features/leaderboard/data/in_memory_leaderboard_repository.dart';
-import 'package:my1010/features/leaderboard/presentation/leaderboard_providers.dart';
+import 'package:my1010/games/original_game/domain/entities/grid_point.dart';
+import 'package:my1010/games/original_game/domain/entities/shape.dart';
+import 'package:my1010/games/original_game/domain/game_engine.dart';
+import 'package:my1010/games/original_game/domain/game_mode.dart';
+import 'package:my1010/games/original_game/domain/services/shape_generator.dart';
+import 'package:my1010/games/original_game/presentation/controllers/game_controller.dart';
+import 'package:my1010/games/original_game/presentation/layout/board_metrics.dart';
+import 'package:my1010/games/original_game/presentation/widgets/board_grid.dart';
+import 'package:my1010/games/original_game/presentation/widgets/shape_tray.dart';
+import 'package:my1010/core/firebase/in_memory_leaderboard_repository.dart';
+import 'package:my1010/core/firebase/leaderboard_repository_provider.dart';
+import 'package:my1010/features/home/home_page.dart';
 
-/// Pumps the full app on a phone-sized surface with a scripted tray.
+/// Pumps the full app on a phone-sized surface with a scripted tray, then
+/// opens the 1010! game from the home menu.
 Future<ProviderContainer> pumpGame(
   WidgetTester tester, {
   required List<Shape> shapes,
@@ -47,6 +49,8 @@ Future<ProviderContainer> pumpGame(
       child: const TenTenApp(),
     ),
   );
+  await tester.pumpAndSettle();
+  await tester.tap(find.byKey(HomePage.tileKey(GameModes.classic.id)));
   await tester.pumpAndSettle();
   return ProviderScope.containerOf(tester.element(find.byType(BoardGrid)));
 }
