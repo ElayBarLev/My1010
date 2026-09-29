@@ -34,6 +34,7 @@ class DraggableShape extends StatelessWidget {
     required this.metrics,
     required this.color,
     required this.fits,
+    this.trayScale = GameConstants.trayScale,
   });
 
   final int slot;
@@ -44,11 +45,13 @@ class DraggableShape extends StatelessWidget {
   /// Whether the piece can go anywhere; unplayable pieces are dimmed.
   final bool fits;
 
+  /// Size of the resting piece relative to board cells.
+  final double trayScale;
+
   @override
   Widget build(BuildContext context) {
     final size = metrics.shapeSize(shape);
     const lift = GameConstants.dragLift;
-    const trayScale = GameConstants.trayScale;
 
     return Draggable<TrayDragData>(
       data: TrayDragData(slot: slot, shape: shape),

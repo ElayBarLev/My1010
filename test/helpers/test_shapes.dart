@@ -1,7 +1,7 @@
-import 'package:ten_ten_clone/features/board/domain/entities/board.dart';
-import 'package:ten_ten_clone/features/board/domain/entities/grid_point.dart';
-import 'package:ten_ten_clone/features/board/domain/entities/shape.dart';
-import 'package:ten_ten_clone/features/board/domain/entities/shape_catalog.dart';
+import 'package:my1010/features/board/domain/entities/board.dart';
+import 'package:my1010/features/board/domain/entities/grid_point.dart';
+import 'package:my1010/features/board/domain/entities/shape.dart';
+import 'package:my1010/features/board/domain/entities/shape_catalog.dart';
 
 Shape shapeById(String id) => ShapeCatalog.standard.byId(id)!;
 

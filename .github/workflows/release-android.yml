@@ -67,11 +67,11 @@ jobs:
             --build-name "${{ steps.version.outputs.name }}" \
             --build-number "${{ steps.version.outputs.code }}"
           cp build/app/outputs/flutter-apk/app-release.apk \
-            "ten_ten_clone-${{ steps.version.outputs.name }}.apk"
+            "my1010-${{ steps.version.outputs.name }}.apk"
 
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_type == 'tag' && github.ref_name || format('v{0}-build{1}', steps.version.outputs.name, steps.version.outputs.code) }}
           name: ${{ steps.version.outputs.name }} (build ${{ steps.version.outputs.code }})
-          files: ten_ten_clone-*.apk
+          files: my1010-*.apk
           generate_release_notes: true

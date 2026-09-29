@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ten_ten_clone/app.dart';
-import 'package:ten_ten_clone/core/constants/game_constants.dart';
-import 'package:ten_ten_clone/core/storage/shared_preferences_provider.dart';
-import 'package:ten_ten_clone/features/board/domain/entities/grid_point.dart';
-import 'package:ten_ten_clone/features/board/domain/entities/shape.dart';
-import 'package:ten_ten_clone/features/board/domain/game_engine.dart';
-import 'package:ten_ten_clone/features/board/domain/game_mode.dart';
-import 'package:ten_ten_clone/features/board/domain/services/shape_generator.dart';
-import 'package:ten_ten_clone/features/board/presentation/controllers/game_controller.dart';
-import 'package:ten_ten_clone/features/board/presentation/layout/board_metrics.dart';
-import 'package:ten_ten_clone/features/board/presentation/widgets/board_grid.dart';
-import 'package:ten_ten_clone/features/board/presentation/widgets/shape_tray.dart';
-import 'package:ten_ten_clone/features/leaderboard/data/in_memory_leaderboard_repository.dart';
-import 'package:ten_ten_clone/features/leaderboard/presentation/leaderboard_providers.dart';
+import 'package:my1010/app.dart';
+import 'package:my1010/core/constants/game_constants.dart';
+import 'package:my1010/core/storage/shared_preferences_provider.dart';
+import 'package:my1010/features/board/domain/entities/grid_point.dart';
+import 'package:my1010/features/board/domain/entities/shape.dart';
+import 'package:my1010/features/board/domain/game_engine.dart';
+import 'package:my1010/features/board/domain/game_mode.dart';
+import 'package:my1010/features/board/domain/services/shape_generator.dart';
+import 'package:my1010/features/board/presentation/controllers/game_controller.dart';
+import 'package:my1010/features/board/presentation/layout/board_metrics.dart';
+import 'package:my1010/features/board/presentation/widgets/board_grid.dart';
+import 'package:my1010/features/board/presentation/widgets/shape_tray.dart';
+import 'package:my1010/features/leaderboard/data/in_memory_leaderboard_repository.dart';
+import 'package:my1010/features/leaderboard/presentation/leaderboard_providers.dart';
 
 /// Pumps the full app on a phone-sized surface with a scripted tray.
 Future<ProviderContainer> pumpGame(

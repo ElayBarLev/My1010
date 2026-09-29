@@ -1,11 +1,11 @@
 {
-    "name": "ten_ten_clone",
-    "short_name": "ten_ten_clone",
+    "name": "my1010",
+    "short_name": "my1010",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#FFFFFF",
+    "theme_color": "#5BBEE5",
+    "description": "A minimalist, ad-free 1010! block puzzle.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

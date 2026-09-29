@@ -1,4 +1,4 @@
-# ten_ten_clone — a 2016-style 1010! puzzle
+# my1010 — a 2016-style 1010! puzzle
 
 A minimalist, ad-free clone of the original **1010!** block puzzle, built with
 Flutter, Riverpod, SharedPreferences and Firebase (Firestore + Auth).
@@ -25,6 +25,8 @@ ends when none of the three pieces fit anywhere.
   for every piece family, and the choice is saved.
 - **Save state**: every move is saved, so the game survives an app kill. The
   local best score is stored per mode.
+- **Score milestones**: the score sits above the board and pops with a label
+  at 100, 250, 500 and every 1,000 points.
 - **Global leaderboard**: Firestore with anonymous auth. If Firebase isn't
   configured, the app falls back to an offline in-memory leaderboard
   automatically.
@@ -98,6 +100,16 @@ Requires Flutter 3.47.5 (stable, Dart 3.13) or newer.
   `https://elaybarlev.github.io/My1010/`.
 - **Claude Code on the web**: `.claude/hooks/session-start.sh` installs Flutter
   automatically in cloud sessions.
+
+## App icon
+
+A rounded square with a "?", drawn in code (no image generation). Edit
+`tool/icon/generate_icons_test.dart` and regenerate every Android, iOS and
+web size with:
+
+```bash
+flutter test tool/icon/generate_icons_test.dart
+```
 
 ## Android
 

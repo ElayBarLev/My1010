@@ -87,14 +87,20 @@ class _BoardGridState extends ConsumerState<BoardGrid> {
           itemCount: board.size * board.size,
           itemBuilder: (context, index) {
             final slot = board.cells[index];
+            final isGhost = preview?.cells.contains(index) ?? false;
+            final willClear = preview?.clearingCells.contains(index) ?? false;
             Color color;
-            if (previewColor != null &&
-                preview!.clearingCells.contains(index)) {
-              color = previewColor;
-            } else if (previewColor != null && preview!.cells.contains(index)) {
-              color = previewColor.withValues(alpha: 0.45);
+            if (isGhost) {
+              // The dragged piece: solid if it completes a line, else a ghost.
+              color = willClear
+                  ? previewColor!
+                  : previewColor!.withValues(alpha: 0.45);
             } else if (slot != null) {
-              color = palette.blockColor(slot);
+              // Existing blocks keep their own colour; blocks about to be
+              // cleared are lightened slightly as a hint.
+              color = willClear
+                  ? Color.lerp(palette.blockColor(slot), Colors.white, 0.3)!
+                  : palette.blockColor(slot);
             } else {
               color = palette.emptyCell;
             }

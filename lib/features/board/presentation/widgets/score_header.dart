@@ -6,7 +6,7 @@ import '../../../themes/presentation/theme_controller.dart';
 import '../../../themes/presentation/theme_picker_sheet.dart';
 import '../controllers/game_controller.dart';
 
-/// Best score, current score and the three menu buttons.
+/// Top bar: best score on the left, menu buttons on the right.
 class ScoreHeader extends ConsumerWidget {
   const ScoreHeader({super.key, required this.onRestart});
 
@@ -15,11 +15,10 @@ class ScoreHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final palette = ref.watch(paletteProvider);
-    final score = ref.watch(gameControllerProvider.select((s) => s.score));
     final best = ref.watch(gameControllerProvider.select((s) => s.bestScore));
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 12, 8, 4),
+      padding: const EdgeInsets.fromLTRB(20, 4, 8, 0),
       child: Row(
         children: [
           Icon(
@@ -37,24 +36,7 @@ class ScoreHeader extends ConsumerWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          Expanded(
-            child: Center(
-              child: TweenAnimationBuilder<int>(
-                tween: IntTween(end: score),
-                duration: const Duration(milliseconds: 300),
-                builder: (_, value, _) => Text(
-                  '$value',
-                  key: const ValueKey('score'),
-                  style: TextStyle(
-                    color: palette.accent,
-                    fontSize: 40,
-                    fontWeight: FontWeight.w700,
-                    fontFeatures: const [FontFeature.tabularFigures()],
-                  ),
-                ),
-              ),
-            ),
-          ),
+          const Spacer(),
           _HeaderButton(
             icon: Icons.palette_outlined,
             tooltip: 'Theme',

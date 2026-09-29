@@ -27,7 +27,7 @@ class TenTenApp extends ConsumerWidget {
 
     final palette = ref.watch(paletteProvider);
     return MaterialApp(
-      title: '1010!',
+      title: 'my1010',
       debugShowCheckedModeBanner: false,
       theme: palette.toThemeData(),
       initialRoute: AppRoutes.game,

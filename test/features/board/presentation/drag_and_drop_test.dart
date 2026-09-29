@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ten_ten_clone/features/board/domain/entities/grid_point.dart';
-import 'package:ten_ten_clone/features/board/presentation/controllers/game_controller.dart';
-import 'package:ten_ten_clone/features/board/presentation/widgets/block_tile.dart';
-import 'package:ten_ten_clone/features/board/presentation/widgets/draggable_shape.dart';
-import 'package:ten_ten_clone/features/board/presentation/widgets/shape_tray.dart';
-import 'package:ten_ten_clone/features/leaderboard/data/in_memory_leaderboard_repository.dart';
-import 'package:ten_ten_clone/features/themes/data/palettes.dart';
+import 'package:my1010/features/board/domain/entities/grid_point.dart';
+import 'package:my1010/features/board/presentation/controllers/game_controller.dart';
+import 'package:my1010/features/board/presentation/widgets/block_tile.dart';
+import 'package:my1010/features/board/presentation/widgets/board_grid.dart';
+import 'package:my1010/features/board/presentation/widgets/draggable_shape.dart';
+import 'package:my1010/features/board/presentation/widgets/shape_tray.dart';
+import 'package:my1010/features/leaderboard/data/in_memory_leaderboard_repository.dart';
+import 'package:my1010/features/themes/data/palettes.dart';
 
 import '../../../helpers/pump_app.dart';
 import '../../../helpers/test_shapes.dart';
@@ -223,5 +224,52 @@ void main() {
     await tester.pumpAndSettle();
     expect(container.read(gameControllerProvider).board.isEmpty, isTrue);
     expect(find.text('No more space'), findsNothing);
+  });
+
+  testWidgets('blocks in a line about to clear keep their own colours', (
+    tester,
+  ) async {
+    final line2h = shapeById('line2_h');
+    final container = await pumpGame(
+      tester,
+      shapes: [line2h, line2h, line2h, line2h, square2, dot],
+    );
+    final controller = container.read(gameControllerProvider.notifier);
+    // Fill row 9, columns 0-7, with yellow 2-lines.
+    for (final (slot, col) in const [(0, 0), (1, 2), (2, 4), (0, 6)]) {
+      expect(controller.place(slot, GridPoint(9, col)), isTrue);
+    }
+    await tester.pumpAndSettle();
+
+    // Hover the green square over the gap so it would complete row 9.
+    final gesture = await dragShapeTo(
+      tester,
+      slot: 1,
+      shape: square2,
+      origin: const GridPoint(8, 8),
+      release: false,
+    );
+
+    const palette = GamePalettes.classic;
+    final yellow = palette.blockColor(line2h.colorSlot);
+    final green = palette.blockColor(square2.colorSlot);
+    int tiles(Color c) => tester
+        .widgetList<BlockTile>(
+          find.descendant(
+            of: find.byType(BoardGrid),
+            matching: find.byType(BlockTile),
+          ),
+        )
+        .where((t) => t.color == c)
+        .length;
+
+    // Existing blocks stay yellow (lightened as a hint), never turn green.
+    expect(tiles(Color.lerp(yellow, Colors.white, 0.3)!), 8);
+    // The dragged piece: solid where it completes the line, ghost above.
+    expect(tiles(green), 2);
+    expect(tiles(green.withValues(alpha: 0.45)), 2);
+
+    await gesture.up();
+    await tester.pumpAndSettle();
   });
 }

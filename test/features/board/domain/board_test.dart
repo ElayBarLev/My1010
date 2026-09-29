@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ten_ten_clone/features/board/domain/entities/board.dart';
-import 'package:ten_ten_clone/features/board/domain/entities/grid_point.dart';
+import 'package:my1010/features/board/domain/entities/board.dart';
+import 'package:my1010/features/board/domain/entities/grid_point.dart';
 
 import '../../../helpers/test_shapes.dart';
 

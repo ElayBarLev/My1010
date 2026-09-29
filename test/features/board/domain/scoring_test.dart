@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ten_ten_clone/features/board/domain/services/scoring_rules.dart';
+import 'package:my1010/features/board/domain/services/scoring_rules.dart';
 
 import '../../../helpers/test_shapes.dart';
 

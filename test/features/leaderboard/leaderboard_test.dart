@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ten_ten_clone/features/leaderboard/data/in_memory_leaderboard_repository.dart';
-import 'package:ten_ten_clone/features/board/domain/entities/grid_point.dart';
-import 'package:ten_ten_clone/features/board/presentation/controllers/game_controller.dart';
-import 'package:ten_ten_clone/features/leaderboard/domain/leaderboard_entry.dart';
-import 'package:ten_ten_clone/features/leaderboard/presentation/leaderboard_name_entry.dart';
+import 'package:my1010/features/leaderboard/data/in_memory_leaderboard_repository.dart';
+import 'package:my1010/features/board/domain/entities/grid_point.dart';
+import 'package:my1010/features/board/presentation/controllers/game_controller.dart';
+import 'package:my1010/features/leaderboard/domain/leaderboard_entry.dart';
+import 'package:my1010/features/leaderboard/presentation/leaderboard_name_entry.dart';
 
 import '../../helpers/pump_app.dart';
 import '../../helpers/test_shapes.dart';

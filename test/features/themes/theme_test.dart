@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ten_ten_clone/core/storage/shared_preferences_provider.dart';
-import 'package:ten_ten_clone/features/board/domain/entities/shape.dart';
-import 'package:ten_ten_clone/features/themes/data/palettes.dart';
-import 'package:ten_ten_clone/features/themes/presentation/theme_controller.dart';
+import 'package:my1010/core/storage/shared_preferences_provider.dart';
+import 'package:my1010/features/board/domain/entities/shape.dart';
+import 'package:my1010/features/themes/data/palettes.dart';
+import 'package:my1010/features/themes/presentation/theme_controller.dart';
 
 import '../../helpers/pump_app.dart';
 import '../../helpers/test_shapes.dart';

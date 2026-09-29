@@ -3,12 +3,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/constants/game_constants.dart';
 import '../../../themes/presentation/theme_controller.dart';
 import '../controllers/game_controller.dart';
 import '../layout/board_metrics.dart';
 import '../widgets/board_grid.dart';
 import '../widgets/game_over_overlay.dart';
+import '../widgets/score_display.dart';
 import '../widgets/score_header.dart';
 import '../widgets/shape_tray.dart';
 
@@ -20,6 +20,9 @@ class GamePage extends ConsumerWidget {
 
   /// Largest board side on tablets / desktop windows.
   static const double maxBoardSide = 520;
+
+  static const double headerHeight = 48;
+  static const double scoreHeight = 76;
 
   Future<void> _confirmRestart(BuildContext context, WidgetRef ref) async {
     final game = ref.read(gameControllerProvider);
@@ -60,36 +63,42 @@ class GamePage extends ConsumerWidget {
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final side = min(
-              min(constraints.maxWidth - 32, constraints.maxHeight * 0.6),
-              maxBoardSide,
-            );
+            final width = constraints.maxWidth;
+            // Space left for board + tray once the fixed rows are laid out.
+            final available =
+                constraints.maxHeight - headerHeight - scoreHeight;
+            // The board takes the width, but never so much height that the
+            // tray gets less than about a third of the free space.
+            final side = min(min(width - 24, available * 0.66), maxBoardSide);
             final metrics = BoardMetrics(side: side, size: boardSize);
-            // Tall enough for a 5-cell piece at tray scale, plus breathing room.
-            final trayHeight = metrics.pitch * 5 * GameConstants.trayScale + 32;
 
             return Stack(
               children: [
                 Column(
                   children: [
-                    ScoreHeader(onRestart: () => _confirmRestart(context, ref)),
+                    SizedBox(
+                      height: headerHeight,
+                      child: ScoreHeader(
+                        onRestart: () => _confirmRestart(context, ref),
+                      ),
+                    ),
+                    const SizedBox(height: scoreHeight, child: ScoreDisplay()),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: palette.boardBackground,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: BoardGrid(metrics: metrics),
+                    ),
+                    // The tray uses all the remaining space below the board.
                     Expanded(
                       child: Center(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: palette.boardBackground,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: BoardGrid(metrics: metrics),
+                        child: SizedBox(
+                          width: side + 8,
+                          child: ShapeTray(metrics: metrics),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: trayHeight,
-                      width: min(constraints.maxWidth, maxBoardSide + 32),
-                      child: ShapeTray(metrics: metrics),
-                    ),
-                    const SizedBox(height: 12),
                   ],
                 ),
                 Positioned.fill(

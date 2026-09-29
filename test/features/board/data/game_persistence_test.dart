@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ten_ten_clone/core/storage/shared_preferences_provider.dart';
-import 'package:ten_ten_clone/features/board/data/game_state_repository.dart';
-import 'package:ten_ten_clone/features/board/domain/entities/grid_point.dart';
-import 'package:ten_ten_clone/features/board/domain/game_engine.dart';
-import 'package:ten_ten_clone/features/board/domain/game_mode.dart';
-import 'package:ten_ten_clone/features/board/domain/services/shape_generator.dart';
-import 'package:ten_ten_clone/features/board/presentation/controllers/game_controller.dart';
+import 'package:my1010/core/storage/shared_preferences_provider.dart';
+import 'package:my1010/features/board/data/game_state_repository.dart';
+import 'package:my1010/features/board/domain/entities/grid_point.dart';
+import 'package:my1010/features/board/domain/game_engine.dart';
+import 'package:my1010/features/board/domain/game_mode.dart';
+import 'package:my1010/features/board/domain/services/shape_generator.dart';
+import 'package:my1010/features/board/presentation/controllers/game_controller.dart';
 
 import '../../../helpers/test_shapes.dart';
 
